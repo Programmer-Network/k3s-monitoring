@@ -10,6 +10,7 @@ spec:
     chart: kube-prometheus-stack
     targetRevision: 75.3.6
     helm:
+      skipCrds: true
       values: |
         prometheus:
           prometheusSpec:
@@ -52,6 +53,12 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
+    # https://www.reddit.com/r/kubernetes/comments/194wrup/psa_if_you_deploy_kubeprometheusstack_with_argocd/
+    # Instruct ArgoCD to ignore the 'app.kubernetes.io/instance' label on Services.
+    # By default, ArgoCD overwrites this label with the application name. However,
+    # the ServiceMonitors in the kube-prometheus-stack chart use this specific label
+    # with the Helm release name to discover services like kube-state-metrics.
+    # This prevents the ServiceMonitor selectors from breaking, ensuring metrics are scraped.
     ignoreDifferences:
       - group: ""
         kind: Service
