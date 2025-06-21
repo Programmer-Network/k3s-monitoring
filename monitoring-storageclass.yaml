@@ -1,0 +1,18 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: longhorn-monitoring
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+# Retain the underlying volume even when the PersistentVolumeClaim is deleted.
+# This is a safety measure to prevent accidental data loss.
+reclaimPolicy: Retain
+parameters:
+  # Number of data replicas to be stored across different nodes.
+  # A value of "3" is recommended for production environments to ensure high availability.
+  numberOfReplicas: "3"
+  # Time in minutes before a stale replica is considered down and a new one is created.
+  # 2880 minutes = 48 hours.
+  staleReplicaTimeout: "2880" # 48 hours in minutes
+  fromBackup: ""
+  fsType: "ext4"

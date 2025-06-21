@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: monitoring
+  namespace: argocd
+spec:
+  description: K3s Monitoring Project
+  # Source repositories that applications in this project can pull manifests from.
+  # '*' allows any repository. For production, you might want to restrict this.
+  sourceRepos:
+    - "*"
+  # Destinations that applications in this project can deploy to.
+  destinations:
+    - namespace: monitoring
+      server: https://kubernetes.default.svc
+    - namespace: argocd
+      server: https://kubernetes.default.svc
+  # Allows the project to manage cluster-scoped resources.
+  # '*' allows any kind of cluster resource. This is broad and should be
+  # restricted in a multi-tenant or more secure environment.
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"
